@@ -1,5 +1,21 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
+
+import react from "@astrojs/react";
+import markdoc from "@astrojs/markdoc";
+
+import cloudflare from "@astrojs/cloudflare";
+
+import tailwindcss from "@tailwindcss/vite";
+
+const isDev = process.argv.includes("dev");
 
 // https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  integrations: [react(), markdoc()],
+  adapter: isDev ? undefined : cloudflare(),
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
+});
