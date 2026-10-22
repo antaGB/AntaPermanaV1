@@ -4,6 +4,7 @@ import { reader } from "../lib/reader";
 import Badge from "./Badge.astro";
 
 const projects = await reader.collections.projects.all();
+console.log("projects found:", projects.length);
 ---
 
 <section id="projects" class="scroll-mt-16 py-20">
