@@ -1,0 +1,18 @@
+{
+  "title": "asdfasdf",
+  "year": "2323",
+  "image": "/images/packages/asdfasdf/image.png",
+  "excerpt": "dfgsdgsdfg",
+  "descriptions": [
+    {
+      "title": "asdf",
+      "details": "asdfasdf"
+    }
+  ],
+  "tools": [
+    {
+      "icon": "github",
+      "name": "asdf"
+    }
+  ]
+}
