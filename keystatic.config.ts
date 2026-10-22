@@ -1,7 +1,7 @@
 import { config, fields, collection } from "@keystatic/core";
 
 export default config({
-	storage: import.meta.env.PROD ? { kind: "github", repo: "antaGb/AntaPermanaV1" } : { kind: "local" },
+	storage: { kind: "github", repo: "antaGB/AntaPermanaV1" },
 
 	collections: {
 		projects: collection({

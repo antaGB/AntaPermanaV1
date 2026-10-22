@@ -14,6 +14,10 @@
         "enabled": true
     },
     "vars": {
-        "PUBLIC_WEB3FORMS_KEY": "ef48796c-35b5-4220-9443-016891a08bde"
+        "PUBLIC_WEB3FORMS_KEY": "ef48796c-35b5-4220-9443-016891a08bde",
+        "KEYSTATIC_GITHUB_CLIENT_ID": "Iv23liod9kTBq93MXRFf",
+        "KEYSTATIC_GITHUB_CLIENT_SECRET": "e6043839b50807f59101ca6f61b7c85fb80edf00",
+        "KEYSTATIC_SECRET": "e54ff673976c12d419baa61ff92eaa58de7ad598bc40d8024fe6881080ae935b79aca26622c61153",
+        "PUBLIC_KEYSTATIC_GITHUB_APP_SLUG": "antagb-keystatic",
     },
 }
