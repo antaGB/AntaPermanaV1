@@ -14,6 +14,7 @@ const isDev = process.argv.includes("dev");
 
 // https://astro.build/config
 export default defineConfig({
+	site: "portofolio-site.antav1.workers.dev",
 	integrations: [react(), markdoc(), keystatic(), icon()],
 	adapter: isDev ? undefined : cloudflare(),
 
