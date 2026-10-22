@@ -1,0 +1,120 @@
+<style is:global>
+  /* Hidden only when the animation will actually run */
+    @media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+        [data-reveal],
+        [data-stagger] > * {
+            opacity: 0;
+        }
+    }
+</style>
+
+<script>
+    import { animate, inView, stagger } from "motion";
+
+    const ease = [0.22, 1, 0.36, 1] as const;
+
+    // Where each variant starts from
+    const from = {
+        up: { y: 24 },
+        fade: {},
+        left: { x: -32 },
+        right: { x: 32 },
+        zoom: { scale: 0.96 },
+    } as const;
+    
+
+    type Variant = keyof typeof from;
+    let stops: Array<() => void> = [];
+
+    // Resolves when the first-load loader is gone (immediately if there isn't one)
+    function whenLoaderDone(): Promise<void> {
+        const loader = document.getElementById("loader");
+        if (!loader) return Promise.resolve();
+
+        return new Promise((resolve) => {
+            const observer = new MutationObserver(() => {
+                if (!document.body.contains(loader)) {
+                    observer.disconnect();
+                    resolve();
+                }
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            // Safety net: never leave the page hidden if something goes wrong
+            setTimeout(() => {
+                observer.disconnect();
+                resolve();
+            }, 6000);
+        });
+    }
+
+    let runId = 0;
+
+    async function init() {
+        const id = ++runId;
+
+        stops.forEach((stop) => stop());
+        stops = [];
+
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        
+        await whenLoaderDone();
+        if (id !== runId) return; 
+
+        const options = { amount: 0.15, margin: "0px 0px -8% 0px" } as const;
+
+        // Single elements: <div data-reveal="up" data-reveal-delay="0.2">
+        document.querySelectorAll<HTMLElement>("[data-reveal]").forEach((el) => {
+            // Already scrolled past (back button, anchor jump): just show it
+            if (el.getBoundingClientRect().bottom < 0) {
+                el.style.opacity = "1";
+                return;
+            }
+
+            const variant = (el.dataset.reveal || "up") as Variant;
+            const delay = Number(el.dataset.revealDelay || 0);
+
+            stops.push(
+                inView(
+                    el,
+                    () => {
+                        animate(
+                        el,
+                        { opacity: [0, 1], ...Object.fromEntries(
+                            Object.entries(from[variant] ?? from.up).map(([k, v]) => [k, [v, k === "scale" ? 1 : 0]]),
+                        ) },
+                        { duration: 1.5, delay, ease },
+                        );
+                    },
+                    options,
+                ),
+            );
+        });
+
+        // Groups: <ul data-stagger> reveals its children one after another
+        document.querySelectorAll<HTMLElement>("[data-stagger]").forEach((group) => {
+        const children = Array.from(group.children) as HTMLElement[];
+        const step = Number(group.dataset.stagger || 0.1);
+
+        stops.push(
+            inView(
+                group,
+                () => {
+                    animate(
+                    children,
+                    { opacity: [0, 1], y: [24, 0] },
+                    { duration: 0.7, delay: stagger(step), ease },
+                    );
+                },
+                options,
+                ),
+            );
+        });
+    }
+
+    document.addEventListener("astro:page-load", init);
+    document.addEventListener("astro:before-swap", () => {
+        stops.forEach((stop) => stop());
+        stops = [];
+    });
+</script>

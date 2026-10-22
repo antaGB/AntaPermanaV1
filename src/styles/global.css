@@ -1,1 +1,38 @@
+/* @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&family=Outfit:wght@100..900&display=swap");
 @import "tailwindcss";
+
+@theme {
+	--font-heading: "Outfit";
+	--font-sans: "Noto Sans JP";
+	--color-paper: #fff;
+	--color-ink: #1a1a1a;
+	--color-muted: #6b6b6b;
+	--color-primary: #374375;
+	--color-secondary: #e0b04f;
+	/* --color-primary: #335c67; Dark slate gray */
+
+	--animate-marquee: marquee 30s linear infinite;
+
+	@keyframes marquee {
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-50%);
+		}
+	}
+}
+
+/* @media (prefers-color-scheme: dark) {
+	:root {
+		--color-paper: #161616;
+		--color-ink: #ecebe7;
+	}
+} */
+/* 
+@media (max-width: 767px) {
+	[style*="view-transition-name"] {
+		view-transition-name: none !important;
+	}
+} */

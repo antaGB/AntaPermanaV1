@@ -1,0 +1,115 @@
+---
+interface Props {
+  text?: string; // use "" for no text
+  color?: string;
+  textColor?: string;
+  /** How long the loader stays before sliding away (ms) */
+  hold?: number;
+  /** Only show on the first visit of the browser session */
+  oncePerSession?: boolean;
+}
+
+const {
+    text = "Welcome",
+    color = "var(--color-primary)",
+    textColor = "var(--color-paper)",
+    hold = 1800,
+    oncePerSession = true,
+} = Astro.props;
+---
+
+<div
+  id="loader"
+  aria-hidden="true"
+  style={`--loader-color:${color};--loader-text:${textColor};--loader-hold:${hold}ms`}
+>
+  {text && <span class="loader-text">{text}</span>}
+  <span class="loader-bar"></span>
+</div>
+
+<script is:inline define:vars={{ oncePerSession }}>
+  (function () {
+    // 1. Never let the loader into a page swap. Registered once.
+    if (!window.__loaderBound) {
+      window.__loaderBound = true;
+      document.addEventListener("astro:before-swap", function (e) {
+        var incoming = e.newDocument.getElementById("loader");
+        if (incoming) incoming.remove();
+      });
+    }
+
+    // 2. First full page load only
+    var el = document.getElementById("loader");
+    if (!el) return;
+
+    try {
+      if (oncePerSession && sessionStorage.getItem("loader-seen")) {
+        el.remove();
+        return;
+      }
+    } catch (e) {}
+
+    el.addEventListener("animationend", function (e) {
+      if (e.target !== el) return;
+      try {
+        sessionStorage.setItem("loader-seen", "1");
+      } catch (err) {}
+      el.remove();
+    });
+  })();
+</script>
+
+<style is:global>
+    #loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--loader-color);
+        animation: loader-exit 700ms cubic-bezier(0.76, 0, 0.24, 1) var(--loader-hold) forwards;
+    }
+
+    .loader-text {
+        color: var(--loader-text);
+        font-size: clamp(2.25rem, 7vw, 4.5rem);
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        animation:
+        loader-text-in 600ms ease-out 100ms both,
+        loader-text-out 300ms ease-in calc(var(--loader-hold) - 300ms) forwards;
+    }
+
+    .loader-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        width: 100%;
+        background: var(--loader-text);
+        transform-origin: left;
+        animation: loader-bar var(--loader-hold) cubic-bezier(0.65, 0, 0.35, 1) both;
+    }
+
+    @keyframes loader-exit {
+        to { transform: translateY(-100%); }
+    }
+    @keyframes loader-text-in {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes loader-text-out {
+        to { opacity: 0; }
+    }
+    @keyframes loader-bar {
+        from { transform: scaleX(0); }
+        to { transform: scaleX(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        #loader {
+        display: none;
+        }
+    }
+</style>

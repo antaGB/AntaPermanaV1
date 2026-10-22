@@ -1,0 +1,45 @@
+---
+import { Icon } from "astro-icon/components";
+
+const year = new Date().getFullYear();
+
+const socials = [
+  { label: "GitHub", href: "https://github.com/your-username", icon: "fa6-brands:github-alt" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/your-username", icon: "fa6-brands:linkedin-in" },
+];
+---
+
+<footer class="border-t border-white/20 bg-primary">
+  <div
+    class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 px-6 py-10 text-sm text-white/70 md:flex-row"
+  >
+    <p>© {year} Anta Permana. Made with care.</p>
+
+    <div class="flex items-center gap-5">
+      <ul class="flex items-center gap-4">
+        {
+          socials.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={item.label}
+                class="-m-2 block p-2 transition duration-200 hover:scale-110 hover:text-white"
+              >
+                <Icon name={item.icon} class="size-5" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a
+        href="#top"
+        class="font-semibold transition-colors duration-200 hover:text-white"
+      >
+        Back to top ↑
+      </a>
+    </div>
+  </div>
+</footer>

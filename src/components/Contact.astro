@@ -1,0 +1,140 @@
+---
+import { Icon } from "astro-icon/components";
+
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
+if (!accessKey) console.warn("Contact form: PUBLIC_WEB3FORMS_KEY is not set");
+
+const email = "antapermana1156@gmail.com"; // shown as a direct link next to the form
+
+const socials = [
+  { label: "GitHub", href: "https://github.com/antaGb", icon: "fa6-brands:github-alt" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/anta-permana", icon: "fa6-brands:linkedin-in" },
+];
+
+const field =
+  "w-full border-0 border-b border-white/20 bg-transparent py-3 text-lg text-white placeholder:text-white/50 transition-colors duration-200 focus:border-secondary focus:outline-none";
+const label = "text-sm font-semibold text-white/70";
+---
+
+<section id="contact" class="scroll-mt-16 py-30 bg-primary">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 items-start gap-12 md:grid-cols-[1fr_2fr] md:gap-16">
+    <!-- Left -->
+    <div>
+      <h2 data-reveal class="text-4xl font-bold text-secondary md:text-5xl">
+        Let's talk.<br />
+        <span class="text-secondary/80">Drop a message.</span>
+      </h2>
+      <p data-reveal data-reveal-delay="0.1" class="mt-6 max-w-sm leading-relaxed text-white/70">
+        Have an idea, a project, or just want to say hi? I read every message and reply as soon as I can.
+      </p>
+
+      <div data-reveal data-reveal-delay="0.15" class="mt-8 flex flex-col gap-4">
+        <a
+          href={`mailto:${email}`}
+          class="w-fit font-semibold text-white underline decoration-secondary/60 decoration-2 underline-offset-4 transition-colors hover:decoration-secondary"
+        >
+          {email}
+        </a>
+        <ul class="flex items-center gap-4 text-white/70">
+          {
+            socials.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={item.label}
+                  class="-m-2 block p-2 transition duration-200 hover:scale-110 hover:text-white"
+                >
+                  <Icon name={item.icon} class="size-5" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- Right: the form -->
+    <form id="contact-form" data-reveal class="flex flex-col gap-8">
+      <input type="hidden" name="access_key" value={accessKey} />
+      <input type="hidden" name="subject" value="New message from your portfolio" />
+      <input type="hidden" name="from_name" value="Portfolio contact form" />
+      <!-- Spam trap: real people never see or tick this -->
+      <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="name" class={label}>Your name</label>
+          <input id="name" name="name" type="text" required autocomplete="name" placeholder="Jane Doe" class={field} />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="email" class={label}>Your email</label>
+          <input id="email" name="email" type="email" required autocomplete="email" placeholder="jane@example.com" class={field} />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for="message" class={label}>Message</label>
+        <textarea id="message" name="message" rows="5" required placeholder="Tell me a little about your idea..." class:list={[field, "resize-none"]}></textarea>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-5">
+        <button
+          type="submit"
+          class="ms-auto group flex items-center gap-2 cursor-pointer border border-white bg-white text-primary hover:bg-transparent hover:text-white px-6 py-3 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:pointer-events-none disabled:opacity-60 motion-reduce:transition-none"
+        >
+          <span data-label>Send message</span>
+          <Icon name="lucide:arrow-up-right" class="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </button>
+
+        <p id="contact-status" role="status" aria-live="polite" class="text-sm"></p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  function initContactForm() {
+    const form = document.getElementById("contact-form") as HTMLFormElement | null;
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = "true";
+
+    const status = document.getElementById("contact-status")!;
+    const button = form.querySelector<HTMLButtonElement>("button[type=submit]")!;
+    const label = button.querySelector<HTMLElement>("[data-label]")!;
+    const idleLabel = label.textContent ?? "Send message";
+
+    const show = (text: string, ok: boolean) => {
+      status.textContent = text;
+      status.className = ok ? "text-sm text-white" : "text-sm text-red-700";
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      status.textContent = "";
+      button.disabled = true;
+      label.textContent = "Sending…";
+
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.message);
+
+        form.reset();
+        show("Thank you! Your message is on its way. I'll reply soon.", true);
+      } catch {
+        show("Something went wrong. Please try again, or email me directly.", false);
+      } finally {
+        button.disabled = false;
+        label.textContent = idleLabel;
+      }
+    });
+  }
+
+  document.addEventListener("astro:page-load", initContactForm);
+</script>

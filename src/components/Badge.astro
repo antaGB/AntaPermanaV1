@@ -1,0 +1,46 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  name: string;
+  icon?: string; // "react" -> simple-icons:react, or a full name like "lucide:mail"
+  variant?: "outline" | "soft" | "solid";
+  size?: "sm" | "md";
+  class?: string;
+}
+
+const {
+  name,
+  icon,
+  variant = "outline",
+  size = "sm",
+  class: className,
+} = Astro.props;
+
+// Tailwind needs full class names written out, so no string building
+const variants = {
+  outline: "border-primary/30 text-primary",
+  soft: "border-transparent bg-primary/10 text-primary",
+  solid: "border-primary bg-primary text-paper",
+};
+
+const sizes = {
+  sm: { box: "px-3 py-1 text-xs gap-2", icon: "size-4" },
+  md: { box: "px-4 py-1.5 text-sm gap-2.5", icon: "size-5" },
+};
+
+// A name with ":" is used as-is, otherwise it defaults to simple-icons
+const iconName = icon ? (icon.includes(":") ? icon : `simple-icons:${icon}`) : null;
+---
+
+<span
+  class:list={[
+    "inline-flex items-center rounded-full border font-medium",
+    variants[variant],
+    sizes[size].box,
+    className,
+  ]}
+>
+  {iconName && <Icon name={iconName} class={sizes[size].icon} />}
+  <span>{name}</span>
+</span>

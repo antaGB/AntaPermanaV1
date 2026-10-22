@@ -5,17 +5,19 @@ import react from "@astrojs/react";
 import markdoc from "@astrojs/markdoc";
 
 import cloudflare from "@astrojs/cloudflare";
-
+import keystatic from "@keystatic/astro";
 import tailwindcss from "@tailwindcss/vite";
+
+import icon from "astro-icon";
 
 const isDev = process.argv.includes("dev");
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react(), markdoc()],
-  adapter: isDev ? undefined : cloudflare(),
+	integrations: [react(), markdoc(), keystatic(), icon()],
+	adapter: isDev ? undefined : cloudflare(),
 
-  vite: {
-    plugins: [tailwindcss()],
-  },
+	vite: {
+		plugins: [tailwindcss()],
+	},
 });

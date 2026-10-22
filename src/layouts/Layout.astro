@@ -1,5 +1,9 @@
 ---
+import Loader from '../components/Loader.astro';
+import Navbar from '../components/Navbar.astro';
 import '../styles/global.css';
+import { ClientRouter, fade } from "astro:transitions";
+import Reveal from "../components/Reveal.astro";
 const { title, lang = 'en' } = Astro.props;
 ---
 <!doctype html>
@@ -10,18 +14,45 @@ const { title, lang = 'en' } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title} | Anta</title>
+		<title>{title}</title>
+
+        <ClientRouter />
 	</head>
-	<body>
-		<slot />
+	<body class="bg-paper text-ink">
+        <Loader text="Hey, welcome!" hold={1500} oncePerSession={false} />
+        <Navbar />
+        <main transition:animate={fade({ duration: "0.25s" })}>
+            <slot />
+        </main>
+
+        <Reveal />
+
+        <script>
+            document.addEventListener(
+                "click",
+                (e) => {
+                    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+
+                    const link = (e.target as Element).closest<HTMLAnchorElement>("a[href*='#']");
+                    if (!link) return;
+
+                    const url = new URL(link.href, location.href);
+                    if (!url.hash || url.pathname !== location.pathname) return;
+
+                    const target = document.querySelector(url.hash);
+                    if (!target) return;
+
+                    // Stop Astro's router from handling this click with an instant jump
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+
+                    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+                    target.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+
+                    history.replaceState(history.state, "", url.hash);
+                },
+                true, // capture phase: runs before Astro's listener
+            );
+        </script>
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

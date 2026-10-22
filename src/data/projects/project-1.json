@@ -1,0 +1,44 @@
+{
+  "title": "Project 1",
+  "siteUrl": "url",
+  "githubUrl": "url",
+  "year": "2025",
+  "image": "/images/packages/project-1/image.png",
+  "excerpt": "this is the project excerpt i want this 2 line long",
+  "descriptions": [
+    {
+      "title": "Overview",
+      "details": "this is the overview"
+    },
+    {
+      "title": "Problems",
+      "details": "this is the problems"
+    }
+  ],
+  "tools": [
+    {
+      "icon": "laravel",
+      "name": "Laravel"
+    },
+    {
+      "icon": "react",
+      "name": "React"
+    },
+    {
+      "icon": "inertia",
+      "name": "Inertia"
+    },
+    {
+      "icon": "mysql",
+      "name": "Mysql"
+    },
+    {
+      "icon": "nextdotjs",
+      "name": "Next"
+    },
+    {
+      "icon": "postgresql",
+      "name": "postgresql"
+    }
+  ]
+}

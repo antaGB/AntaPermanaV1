@@ -1,0 +1,26 @@
+{
+  "title": "Project 2",
+  "year": "2026",
+  "image": "/images/packages/project-2/image.jpg",
+  "excerpt": "this is the excerpt for project 2 i want it 2 line long",
+  "descriptions": [
+    {
+      "title": "overview",
+      "details": "Thisi is project 2 overview"
+    },
+    {
+      "title": "Problem",
+      "details": "this is project 2 problem"
+    }
+  ],
+  "tools": [
+    {
+      "icon": "astro",
+      "name": "Astro"
+    },
+    {
+      "icon": "sqlite",
+      "name": "sqlite"
+    }
+  ]
+}

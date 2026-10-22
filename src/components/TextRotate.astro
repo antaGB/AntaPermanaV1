@@ -1,0 +1,55 @@
+---
+interface Props {
+  words: string[];
+  class?: string;
+}
+
+const { words, class: className = "" } = Astro.props;
+---
+
+<span class={`inline-block relative overflow-hidden align-top ${className}`}>
+  <!-- Invisible placeholder to reserve the correct height/width for multi-line text -->
+  <span class="invisible block select-none" aria-hidden="true">
+    {words[0]}
+  </span>
+
+  {words.map((word, index) => (
+    <span 
+      class={`rotator-item absolute inset-0 transition-all duration-500 ${
+        index === 0 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full'
+      }`}
+      data-index={index}
+    >
+      {word}
+    </span>
+  ))}
+</span>
+
+<script define:vars={{ wordCount: words.length }}>
+  let currentIndex = 0;
+  const items = document.querySelectorAll('.rotator-item');
+
+  if (items.length > 1) {
+    setInterval(() => {
+      const current = items[currentIndex];
+      currentIndex = (currentIndex + 1) % wordCount;
+      const next = items[currentIndex];
+
+      // Slide current out up
+      current.classList.remove('opacity-100', 'translate-y-0');
+      current.classList.add('opacity-0', '-translate-y-full');
+
+      // Slide next in from bottom
+      next.classList.remove('opacity-0', 'translate-y-full');
+      next.classList.add('opacity-100', 'translate-y-0');
+
+      // Reset old item position after transition
+      setTimeout(() => {
+        current.classList.remove('transition-all', 'duration-500', '-translate-y-full');
+        current.classList.add('translate-y-full');
+        void current.offsetWidth; // Trigger reflow
+        current.classList.add('transition-all', 'duration-500');
+      }, 500);
+    }, 3500);
+  }
+</script>

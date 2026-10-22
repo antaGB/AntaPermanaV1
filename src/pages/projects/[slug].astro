@@ -1,0 +1,146 @@
+---
+import { reader } from "../../lib/reader";
+import Layout from "../../layouts/Layout.astro";
+import Badge from "../../components/Badge.astro";
+import LinkButton from "../../components/LinkButton.astro";
+import { Icon } from "astro-icon/components";
+
+export async function getStaticPaths() {
+  const projects = await reader.collections.projects.all();
+
+  return projects.map(({ slug, entry }, i) => {
+    return {
+      params: { slug },
+      props: {
+        entry,
+        slug,
+      },
+    };
+  });
+}
+
+const { entry, slug } = Astro.props;
+const descriptions = entry.descriptions ?? [];
+const tools = entry.tools ?? [];
+---
+
+<Layout title={`${entry.title} | Anta Permana`}>
+  <article class="mx-auto max-w-6xl px-6 py-10">
+    <!-- Back link -->
+    <a
+      href="/#projects"
+      
+      class="group inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 transition-colors hover:text-primary"
+    >
+      <Icon
+        name="lucide:arrow-left"
+        class="size-4 transition-transform duration-200 group-hover:-translate-x-1"
+      />
+      All projects
+    </a>
+
+    <!-- Title block -->
+    <header class="mt-10 max-w-3xl">
+      <h1
+        data-reveal
+        data-reveal-delay="0.05"
+        class="mt-2 text-3xl font-bold text-primary md:text-4xl"
+      >
+        {entry.title}.
+      </h1>
+      {
+        entry.excerpt && (
+          <p
+            data-reveal
+            data-reveal-delay="0.1"
+            class="mt-5 text-base leading-relaxed text-neutral-500"
+          >
+            {entry.excerpt}
+          </p>
+        )
+      }
+
+      {
+        (entry.siteUrl || entry.githubUrl) && (
+          <div
+            data-reveal
+            data-reveal-delay="0.15"
+            class="mt-8 flex flex-wrap items-center gap-3"
+          >
+            {entry.siteUrl && (
+              <LinkButton href={entry.siteUrl}>Visit website</LinkButton>
+            )}
+            {entry.githubUrl && (
+              <LinkButton
+                href={entry.githubUrl}
+                variant="outline"
+                icon="lucide:github"
+              >
+                Source code
+              </LinkButton>
+            )}
+          </div>
+        )
+      }
+    </header>
+
+    <!-- Image: same name as the card image, so it morphs between pages -->
+    <img
+      src={entry.image}
+      alt={entry.title}
+      transition:name={`project-${slug}`}
+      class="mt-10 aspect-3/2 max-h-[70vh] w-full rounded-2xl object-cover shadow-sm"
+    />
+
+    <!-- Details -->
+    <div
+      class="mt-20 grid grid-cols-1 items-start gap-12 md:grid-cols-[1fr_2fr] md:gap-16"
+    >
+      <!-- Left: sticks while the text scrolls -->
+      <aside class="md:sticky md:top-28">
+        {
+          tools.length > 0 && (
+            <div data-reveal>
+              <h2 class="text-sm font-semibold text-neutral-400">Built with</h2>
+              <ul class="mt-4 flex flex-wrap gap-2">
+                {tools.map((tool) => (
+                  <li>
+                    <Badge
+                      name={tool.name}
+                      icon={tool.icon}
+                      variant="outline"
+                      size="md"
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </aside>
+
+      <!-- Right: the story -->
+      <div class="flex flex-col">
+        {
+          descriptions.map((detail, i) => (
+            <section
+              data-reveal
+              class="border-t border-primary/10 py-10 first:border-t-0 first:pt-0"
+            >
+              <p class="flex items-center gap-3 text-sm font-semibold text-neutral-400">
+                <span class="h-px w-6 bg-secondary" />
+                {String(i + 1).padStart(2, "0")}
+              </p>
+              <h2 class="mt-4 text-2xl font-bold text-primary md:text-3xl">
+                {detail.title}
+              </h2>
+              <p class="mt-4 max-w-2xl whitespace-pre-line leading-relaxed text-neutral-500">
+                {detail.details}
+              </p>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </article>
+</Layout>

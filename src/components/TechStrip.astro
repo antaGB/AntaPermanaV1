@@ -1,0 +1,41 @@
+---
+import { Icon } from "astro-icon/components";
+
+const tools = [
+  { name: "Laravel", icon: "laravel" },
+  { name: "React", icon: "react" },
+  { name: "Next.js", icon: "nextdotjs" },
+  { name: "Astro", icon: "astro" },
+  { name: "Tailwind", icon: "tailwindcss" },
+  { name: "MySQL", icon: "mysql" },
+  { name: "PostgreSQL", icon: "postgresql" },
+  { name: "TypeScript", icon: "typescript" },
+  { name: "PHP", icon: "php" },
+  { name: "Git", icon: "git" },
+];
+
+// Duplicated so the loop has no gap
+const loop = [...tools, ...tools];
+---
+
+<section class="max-w-8xl mx-auto px-5 py-8">
+    <!-- <p class="mb-8 text-center text-sm font-semibold text-neutral-500">
+        Tools I enjoy working with
+    </p> -->
+
+    <div class="overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
+        <ul class="flex w-max animate-marquee hover:[animation-play-state:paused] motion-reduce:animate-none">
+            {
+                loop.map((tool, i) => (
+                <li
+                    aria-hidden={i >= tools.length ? "true" : undefined}
+                    class="group mr-10 flex items-center gap-3 text-neutral-400 transition-colors duration-200 hover:text-primary"
+                >
+                    <Icon name={`simple-icons:${tool.icon}`} class="size-7" />
+                    <span class="text-sm font-semibold">{tool.name}</span>
+                </li>
+                ))
+            }
+        </ul>
+    </div>
+</section>

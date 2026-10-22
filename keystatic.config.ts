@@ -4,27 +4,56 @@ export default config({
 	storage: import.meta.env.PROD ? { kind: "github", repo: "youruser/site" } : { kind: "local" },
 
 	collections: {
-		packages: collection({
-			label: "Tour Packages",
+		projects: collection({
+			label: "Project",
 			slugField: "title",
-			path: "src/data/packages/*",
+			path: "src/data/projects/*",
 			format: { data: "json" },
 			schema: {
 				title: fields.slug({ name: { label: "Title" } }),
-				price: fields.integer({ label: "Price (USD)", validation: { min: 0 } }),
-				duration: fields.text({ label: "Duration (e.g. 3 days)" }),
-				summary: fields.text({ label: "Short summary", multiline: true }),
+				siteUrl: fields.text({ label: "Site url" }),
+				githubUrl: fields.text({ label: "Github url" }),
+				year: fields.text({ label: "Year created" }),
 				image: fields.image({
 					label: "Cover image",
 					directory: "public/images/packages",
 					publicPath: "/images/packages/",
 				}),
-				itinerary: fields.array(
+				excerpt: fields.text({ label: "Excerpt", multiline: true }),
+				descriptions: fields.array(
 					fields.object({
-						title: fields.text({ label: "Day title" }),
+						title: fields.text({ label: "Section title" }),
 						details: fields.text({ label: "Details", multiline: true }),
 					}),
-					{ label: "Itinerary", itemLabel: (p) => p.fields.title.value },
+					{ label: "Descriptions", itemLabel: (p) => p.fields.title.value },
+				),
+				tools: fields.array(
+					fields.object({
+						icon: fields.text({ label: "Tool icon" }),
+						name: fields.text({ label: "Tool name" }),
+					}),
+					{ label: "Tools", itemLabel: (p) => p.fields.name.value },
+				),
+			},
+		}),
+
+		experiences: collection({
+			label: "Experience",
+			slugField: "title",
+			path: "src/data/experiences/*",
+			format: { data: "json" },
+			schema: {
+				title: fields.text({ label: "Title" }),
+				companyName: fields.text({ label: "Company name" }),
+				companyUrl: fields.text({ label: "Company url" }),
+				duration: fields.text({ label: "2020 - Present" }),
+				summary: fields.text({ label: "Short summary", multiline: true }),
+				tools: fields.array(
+					fields.object({
+						icon: fields.text({ label: "Tool icon" }),
+						name: fields.text({ label: "Tool name" }),
+					}),
+					{ label: "Tools", itemLabel: (p) => p.fields.name.value },
 				),
 			},
 		}),

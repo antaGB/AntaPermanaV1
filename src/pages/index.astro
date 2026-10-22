@@ -1,11 +1,109 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import { Icon } from 'astro-icon/components';
+import Layout from '../layouts/Layout.astro';
+import LinkButton from '../components/LinkButton.astro';
+import Experience from '../components/Experience.astro';
+import TechStrip from '../components/TechStrip.astro';
+import ProjectList from '../components/ProjectList.astro';
+import Footer from '../components/footer.astro';
+import Contact from '../components/Contact.astro';
+ 
+const facts = [
+    { label: "Based in", value: "Your city, Country" },
+    { label: "Experience", value: "2+ years" },
+    { label: "Focus", value: "Fullstack web development" },
+    { label: "Currently", value: "Open to work" },
+];
+
+const paragraphs = [
+    "Hi there! I'm Anta, and I building things. I'm a fullstack web developer who cares about clean, simple interfaces and reliable work behind the scenes.",
+    "Currently, I'm  looking for a full-time role where I can help and work closely with people who care about the details, and keep learning along the way.",
+    "In my spare time, you can usually find me [hobby one], [hobby two], or [something specific and a little funny].",
+];
+
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Anta Permana">
+    <section class="lg:px-5">
+        <div class="max-w-7xl mx-auto h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-[minmax(0,1fr)]">
+            <div data-reveal="left" class="px-5 pb-10 lg:ps-0">
+                <h1 class="mb-5 font-heading font-bold text-6xl text-secondary lg:text-7xl">
+                    Anta <br />
+                    <span>Permana</span>
+                </h1>
+                <p class="mb-10 text-sm lg:text-base text-neutral-500 leading-relaxed">Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, exercitationem. Ipsa expedita dicta error, praesentium necessitatibus eius cumque ex vitae!</p>
+                <LinkButton href="">Drop me a message</LinkButton>
+            </div>
+
+            <div data-reveal="left" data-reveal-delay="0.5" class="group h-full overflow-hidden md:h-auto shadow-md md:row-span-2 lg:row-span-1">
+                <img
+                    src="/images/profile/anta-dualtone.jpg"
+                    alt="Portrait of Anta Permana"
+                    class="h-100 w-full md:h-full  object-cover duration-200 group-hover:scale-105"
+                />
+            </div>
+
+            <div data-reveal="left" data-reveal-delay="1" class="self-end py-10 ps-5 lg:px-10">
+                <div class="mb-10">
+                    <h2 class="text-4xl lg:text-5xl font-heading font-bold text-primary">
+                        <span class="text-primary/70">Fullstack</span> <br>
+                        Web Developer
+                    </h2>
+                </div>
+                <div>
+                    <p><span class="text-lg md:text-xl font-heading font-semibold text-primary">2Year+</span> Experience in development</p>
+                    <p class="text-md md:text-lg font-bold">Always curious, always growing</p>
+                </div>
+            </div>
+        </div>
+    </section> 
+    <section class="bg-primary px-5 py-20">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-y-12 lg:gap-16">
+            <div data-reveal="left" data-reveal-delay="0.25" class="w-full">
+                <div class="mx-auto bg-white p-3 -3xl w-fit shadow-sm h-fit duration-100 rotate-3 hover:rotate-0">
+                    <div class="relative">
+                        <img src="/images/profile/anta-permana-profile.jpg" alt="Portrait of Anta Permana" class="aspect-3/3 -2xl object-cover max-h-100" />
+                        <div class="absolute top-0 right-0 p-5 flex flex-col gap-3">
+                            <a href="" aria-label="github" class="w-10 h-10 -full flex items-center justify-center bg-white/60 duration-100 hover:bg-white hover:scale-105">
+                                <Icon name="fa6-brands:github" class="size-6 text-ink" />
+                            </a>
+                            <a href="" aria-label="linkedin" class="w-10 h-10 -full flex items-center justify-center duration-100 bg-white/60 hover:bg-white hover:scale-105">
+                                <Icon name="fa6-brands:linkedin-in" class="size-5" />
+                            </a>
+                        </div>
+                    </div>
+                    <p class="pt-4 pb-1 flex items-center justify-center gap-2">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute -inset-1 -full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex -full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        <span class="font-semibold">Available For Work</span>
+                    </p>
+                </div>
+            </div>
+            <div data-reveal class="md:col-span-2">
+                <h2 class="mb-8 text-4xl text-secondary font-bold font-heading lg:text-5xl">
+                    A little about me. <br />
+                    <span class="text-secondary/80">The person behind the work.</span>
+                </h2>
+                <div data-stagger="0.5" class="mb-10">
+                    {
+                        paragraphs.map((text, i) => (
+                        <p class="mb-4 text-white/70 text-sm md:text-base w-[90%] lg:w-[70%]">
+                            {text}
+                        </p>
+                        ))
+                    }
+                </div>
+                <LinkButton data-reveal href="" variant="secondary">Drop me a message</LinkButton>
+            </div>
+            
+        </div>
+    </section>
+    <Experience />
+    <TechStrip />
+    <ProjectList />
+    <Contact />
+    <Footer />
 </Layout>

@@ -1,0 +1,91 @@
+---
+import { Icon } from "astro-icon/components";
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends HTMLAttributes<"a"> {
+  variant?: "solid" | "secondary"| "outline" | "soft" | "ghost";
+  size?: "sm" | "md" | "lg";
+  icon?: string | null; // pass null for no icon
+}
+
+const {
+  variant = "solid",
+  size = "md",
+  icon = "lucide:arrow-up-right",
+  href,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const variants = {
+  solid:
+    "border-primary bg-primary text-paper hover:bg-transparent hover:text-primary",
+  secondary:
+    "border-white bg-white text-primary hover:bg-transparent hover:text-white",
+  outline:
+    "border-primary bg-transparent text-primary hover:bg-primary hover:text-paper",
+  soft:
+    "border-transparent bg-primary/10 text-primary hover:bg-primary hover:text-paper",
+  ghost:
+    "border-transparent bg-transparent text-primary hover:bg-primary/10",
+};
+
+const sizes = {
+  sm: "px-5 py-2 text-sm",
+  md: "px-5 py-3 text-sm",
+  lg: "px-7 py-4 text-base",
+};
+
+const iconBox = {
+  sm: "size-4",
+  md: "size-4",
+  lg: "size-5",
+};
+
+const isExternal = typeof href === "string" && /^https?:\/\//.test(href);
+const externalAttrs = isExternal
+  ? { target: "_blank", rel: "noopener noreferrer" }
+  : {};
+---
+
+<a
+  href={href}
+  {...externalAttrs}
+  {...rest}
+  class:list={[
+    "group flex w-fit items-center gap-2 border font-semibold",
+    "transition-all duration-200 ease-out active:scale-95",
+    "motion-reduce:transition-none motion-reduce:transform-none",
+    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
+    variants[variant],
+    sizes[size],
+    className,
+  ]}
+>
+  <span><slot /></span>
+
+  {
+    icon && (
+      <span class:list={["relative block overflow-hidden", iconBox[size]]}>
+        <Icon
+          name={icon}
+          class:list={[
+            "absolute inset-0 transition-transform duration-300",
+            iconBox[size],
+            "group-hover:translate-x-full group-hover:-translate-y-full",
+            "group-active:translate-x-full group-active:-translate-y-full",
+          ]}
+        />
+        <Icon
+          name={icon}
+          class:list={[
+            "absolute inset-0 -translate-x-full translate-y-full transition-transform duration-300",
+            iconBox[size],
+            "group-hover:translate-x-0 group-hover:translate-y-0",
+            "group-active:translate-x-0 group-active:translate-y-0",
+          ]}
+        />
+      </span>
+    )
+  }
+</a>
